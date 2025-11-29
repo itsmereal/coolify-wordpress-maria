@@ -6,6 +6,8 @@ A production-ready WordPress deployment stack optimized for Coolify, featuring:
 - **Nginx Alpine** - Custom web server with WordPress-optimized configuration
 - **MariaDB 10.6** - Reliable database with health checks
 - **Redis Alpine** - Object caching for improved performance
+- **FileBrowser** - Web-based file manager for WordPress files
+- **phpMyAdmin** - Database management interface
 - **Redis Object Cache Plugin** - Automatically installed (requires activation)
 
 ## Quick Start
@@ -16,7 +18,9 @@ A production-ready WordPress deployment stack optimized for Coolify, featuring:
 2. **Select "Docker Compose"** as the build pack
 3. **Point to this Git repository**: `https://github.com/itsmereal/coolify-wordpress-maria`
 4. **Configure domains**:
-   - **Domains for nginx**: Enter your domain (e.g., `https://yourdomain.com`)
+   - **Domains for nginx**: Your main domain (e.g., `https://yourdomain.com`)
+   - **Domains for filebrowser**: File manager subdomain (e.g., `https://files.yourdomain.com`)
+   - **Domains for phpmyadmin**: Database admin subdomain (e.g., `https://pma.yourdomain.com`)
    - **Domains for wordpress**: Leave empty (internal service only)
 5. **Save and Deploy**
 
@@ -29,9 +33,13 @@ The deployment will:
 ### Service Architecture
 
 ```
-Internet → Coolify Proxy → Nginx (port 80) → WordPress PHP-FPM (port 9000)
-                                                      ↓
-                                               MariaDB + Redis
+                          ┌─→ Nginx ─→ WordPress PHP-FPM
+                          │              ↓
+Internet → Coolify Proxy ─┼─→ FileBrowser ─→ wordpress_data volume
+                          │
+                          └─→ phpMyAdmin ─→ MariaDB
+
+                             Redis (internal)
 ```
 
 ## Features
@@ -74,6 +82,18 @@ After successful deployment:
    - Go to Settings → Redis
    - Click "Enable Object Cache"
    - Verify connection shows "Connected"
+
+### Admin Tools
+
+- **FileBrowser** (`files.yourdomain.com`):
+  - Default login: `admin` / `admin`
+  - ⚠️ **Change password immediately after first login**
+  - Browse, upload, edit WordPress files
+
+- **phpMyAdmin** (`pma.yourdomain.com`):
+  - Auto-logged in as root
+  - Manage WordPress database
+  - Import/export SQL files
 
 ## Local Development
 

@@ -14,7 +14,7 @@ This is a Docker-based WordPress deployment stack designed for Coolify deploymen
 
 ### Service Stack
 
-The [docker-compose.yaml](docker-compose.yaml) defines a 5-service WordPress stack:
+The [docker-compose.yaml](docker-compose.yaml) defines a 7-service WordPress stack:
 
 1. **nginx** - Custom Alpine-based web server
    - Built from [nginx/Dockerfile](nginx/Dockerfile)
@@ -45,6 +45,18 @@ The [docker-compose.yaml](docker-compose.yaml) defines a 5-service WordPress sta
 5. **redis** - Alpine-based Redis cache
    - Object caching for improved performance
    - 256MB memory limit with LRU eviction
+
+6. **filebrowser** - Web-based file manager
+   - Provides web UI for managing WordPress files
+   - Mounts `wordpress_data` volume at `/srv`
+   - Default credentials: admin/admin (change after first login)
+   - Accessible via subdomain (e.g., files.yourdomain.com)
+
+7. **phpmyadmin** - Database management interface
+   - Web UI for MariaDB administration
+   - Auto-configured to connect to `db` service
+   - Supports 256MB upload limit for SQL imports
+   - Accessible via subdomain (e.g., pma.yourdomain.com)
 
 ### Custom WordPress Image
 
@@ -100,6 +112,8 @@ Deploy via the Coolify UI:
 3. Point to your Git repository
 4. Configure domains:
    - **Domains for nginx**: Your domain (e.g., https://yourdomain.com)
+   - **Domains for filebrowser**: File manager (e.g., https://files.yourdomain.com)
+   - **Domains for phpmyadmin**: Database admin (e.g., https://pma.yourdomain.com)
    - **Domains for wordpress**: Leave empty
 5. Save and deploy
 
